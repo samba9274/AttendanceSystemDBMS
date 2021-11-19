@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  db:
+    image: ubuntu/mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_USER=dbms
+      - MYSQL_PASSWORD=dbms
+      - MYSQL_DATABASE=project
+    networks:
+      - mern-app
+    healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 1s
+            retries: 120
+  backend:
+    build: express
+    environment:
+      - PROJECT_WEB_PORT=3000
+      - PROJECT_DB_PORT=3306
+      - PROJECT_JWT_SECRET=secret
+      - PROJECT_DB_HOST=database
+      - PROJECT_DB_USERNAME=dbms
+      - PROJECT_DB_PASSWORD=dbms
+      - PROJECT_DB_DATABASE=project
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - mern-app
+    links:
+      - "db:database"
+  frontend:
+    build: react
+    environment:
+      - REACT_APP_BACKEND_SERVER=http://samba9274.duckdns.org:3000
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - mern-app
+networks:
+  mern-app:
+    driver: bridge
