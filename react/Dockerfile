@@ -1,6 +1,8 @@
 FROM node:lts-alpine AS builder
 WORKDIR /app
 COPY . .
+ARG REACT_APP_BACKEND_SERVER
+ENV REACT_APP_BACKEND_SERVER ${REACT_APP_BACKEND_SERVER}
 RUN npm install
 RUN npm run build
 

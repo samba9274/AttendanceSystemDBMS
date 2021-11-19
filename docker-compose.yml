@@ -35,9 +35,10 @@ services:
     links:
       - "db:database"
   frontend:
-    build: react
-    environment:
-      - REACT_APP_BACKEND_SERVER=http://samba9274.duckdns.org:3000
+    build:
+      context: react
+      args:
+        REACT_APP_BACKEND_SERVER: http://samba9274.duckdns.org:3000
     ports:
       - "80:80"
     depends_on:
