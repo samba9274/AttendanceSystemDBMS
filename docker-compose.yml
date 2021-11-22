@@ -32,13 +32,14 @@ services:
         condition: service_healthy
     networks:
       - mern-app
+    restart: always
     links:
       - "db:database"
   frontend:
     build:
       context: react
       args:
-        REACT_APP_BACKEND_SERVER: http://samba9274.duckdns.org:3000
+        REACT_APP_BACKEND_SERVER: http://dbms-mini-project.duckdns.org:3000
     ports:
       - "80:80"
     depends_on:

@@ -30,61 +30,132 @@ app.get("/", (req, res) => res.send("Server ready"));
 app.get("/reset", (req, res) => {
   connection.query(
     "DROP TABLES classes, students, teachers, subjects, lectures, attendance",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE classes (class_id INT PRIMARY KEY AUTO_INCREMENT,class_name VARCHAR(20))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE students (student_id INT PRIMARY KEY AUTO_INCREMENT,student_name VARCHAR(30),student_roll VARCHAR(20) UNIQUE,student_password VARCHAR(8),class_id INT,FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE teachers (teacher_id INT PRIMARY KEY AUTO_INCREMENT,teacher_name VARCHAR(30),teacher_username VARCHAR(15) UNIQUE,teacher_password VARCHAR(8))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE subjects (subject_id INT PRIMARY KEY AUTO_INCREMENT,subject_name VARCHAR(15),teacher_id INT,class_id INT,FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE attendance (attendance_id INT PRIMARY KEY AUTO_INCREMENT,student_id INT,lecture_id INT,FOREIGN KEY (student_id) REFERENCES students(student_id),FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   res.status(200).send();
 });
 
 app.post("/class", (req, res) => {
   connection.query(
-    `INSERT INTO classes(class_name) VALUES ('${req.body.class.name}')`
+    `INSERT INTO classes(class_name) VALUES ('${req.body.class.name}')`,
+    (error, results, fields) => {
+      if (error) {
+        res.status(500).send();
+        return;
+      }
+      res.status(201).send();
+    }
   );
   res.status(201).send();
+});
+
+app.get("/class", (req, res) => {
+  connection.query(`SELECT * FROM classes`, (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+    res.send(results);
+    return;
+  });
 });
 
 app.post("/student", (req, res) => {
   connection.query(
-    `INSERT INTO students(student_name, student_roll, class_id, student_password) VALUES ('${req.body.student.name}', '${req.body.student.roll}', ${req.body.student.class}, '${req.body.student.password}')`
+    `INSERT INTO students(student_name, student_roll, class_id, student_password) VALUES ('${req.body.student.name}', '${req.body.student.roll}', ${req.body.student.class}, '${req.body.student.password}')`,
+    (error, results, fields) => {
+      if (error) {
+        res.status(500).send();
+        return;
+      }
+      res.status(201).send();
+    }
   );
   res.status(201).send();
+});
+
+app.get("/student", (req, res) => {
+  connection.query(`SELECT * FROM students`, (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+    res.send(results);
+    return;
+  });
 });
 
 app.post("/teacher", (req, res) => {
   connection.query(
-    `INSERT INTO teachers(teacher_name, teacher_username, teacher_password) VALUES ('${req.body.teacher.name}', '${req.body.teacher.username}', '${req.body.teacher.password}')`
+    `INSERT INTO teachers(teacher_name, teacher_username, teacher_password) VALUES ('${req.body.teacher.name}', '${req.body.teacher.username}', '${req.body.teacher.password}')`,
+    (error, results, fields) => {
+      if (error) {
+        res.status(500).send();
+        return;
+      }
+      res.status(201).send();
+    }
   );
   res.status(201).send();
 });
 
+app.get("/teacher", (req, res) => {
+  connection.query(`SELECT * FROM teachers`, (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+    res.send(results);
+    return;
+  });
+});
+
 app.post("/subject", (req, res) => {
   connection.query(
-    `INSERT INTO subjects(subject_name, teacher_id, class_id) VALUES ('${req.body.subject.name}', ${req.body.subject.teacher}, ${req.body.subject.class})`
+    `INSERT INTO subjects(subject_name, teacher_id, class_id) VALUES ('${req.body.subject.name}', ${req.body.subject.teacher}, ${req.body.subject.class})`,
+    (error, results, fields) => {
+      if (error) {
+        res.status(500).send();
+        return;
+      }
+      res.status(201).send();
+    }
   );
-  res.status(201).send();
+});
+
+app.get("/subject", (req, res) => {
+  connection.query(`SELECT * FROM subjects`, (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+    res.send(results);
+    return;
+  });
 });
 
 app.post("/lecture", (req, res) => {
@@ -102,12 +173,30 @@ app.post("/lecture", (req, res) => {
       if (error) res.status(500).send();
       if (results[0].teacher_id === teacher_id) {
         connection.query(
-          `INSERT INTO lectures(lecture_name, lecture_code, lecture_start, subject_id) VALUES ('${req.body.lecture.name}', '${lecture_code}', '${req.body.lecture.start}', ${req.body.lecture.subject})`
+          `INSERT INTO lectures(lecture_name, lecture_code, lecture_start, subject_id) VALUES ('${req.body.lecture.name}', '${lecture_code}', '${req.body.lecture.start}', ${req.body.lecture.subject})`,
+          (error, results, fields) => {
+            if (error) {
+              res.status(500).send();
+              return;
+            }
+            res.status(201).send(lecture_code);
+            return;
+          }
         );
-        res.status(201).send(lecture_code);
       } else res.status(401).send();
     }
   );
+});
+
+app.get("/lecture", (req, res) => {
+  connection.query(`SELECT * FROM lectures`, (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+    res.send(results);
+    return;
+  });
 });
 
 app.post("/attendance", (req, res) => {
@@ -154,6 +243,17 @@ app.post("/attendance", (req, res) => {
       }
     }
   );
+});
+
+app.get("/attendance", (req, res) => {
+  connection.query(`SELECT * FROM attendance`, (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+    res.send(results);
+    return;
+  });
 });
 
 app.post("/student/login", (req, res) => {
@@ -410,31 +510,31 @@ app.delete("/teacher/lectures/:id/:student", (req, res) => {
 app.listen(port, () => {
   connection.query(
     "DROP TABLES classes, students, teachers, subjects, lectures, attendance",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE classes (class_id INT PRIMARY KEY AUTO_INCREMENT,class_name VARCHAR(20))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE students (student_id INT PRIMARY KEY AUTO_INCREMENT,student_name VARCHAR(30),student_roll VARCHAR(20) UNIQUE,student_password VARCHAR(8),class_id INT,FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE teachers (teacher_id INT PRIMARY KEY AUTO_INCREMENT,teacher_name VARCHAR(30),teacher_username VARCHAR(15) UNIQUE,teacher_password VARCHAR(8))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE subjects (subject_id INT PRIMARY KEY AUTO_INCREMENT,subject_name VARCHAR(15),teacher_id INT,class_id INT,FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   connection.query(
     "CREATE TABLE attendance (attendance_id INT PRIMARY KEY AUTO_INCREMENT,student_id INT,lecture_id INT,FOREIGN KEY (student_id) REFERENCES students(student_id),FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id))",
-    (error, results, query) => {}
+    (error, results, fields) => {}
   );
   console.log(`Listening on port : ${port}`);
 });
