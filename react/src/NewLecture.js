@@ -8,7 +8,7 @@ export default function NewLecture({ lecture, subject }) {
       alert("Lecture name cannot be empty");
       return;
     }
-    fetch(`${process.env.PROJECT_BACKEND}/lecture`, {
+    fetch(`${process.env.REACT_APP_BACKEND_SERVER}/lecture`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

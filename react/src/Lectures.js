@@ -9,7 +9,7 @@ export default function Lectures() {
   const [subjects, setSubjects] = useState([]);
   const [subject, setSubject] = useState(0);
   useEffect(() => {
-    fetch(`${process.env.PROJECT_BACKEND}/teacher/lectures`, {
+    fetch(`${process.env.REACT_APP_BACKEND_SERVER}/teacher/lectures`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("jwt"),
@@ -30,7 +30,7 @@ export default function Lectures() {
       });
   }, []);
   const deleteLecture = (lecture_id) => {
-    fetch(`${process.env.PROJECT_BACKEND}/lecture/${lecture_id}`, {
+    fetch(`${process.env.REACT_APP_BACKEND_SERVER}/lecture/${lecture_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

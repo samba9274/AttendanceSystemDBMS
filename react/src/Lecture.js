@@ -5,7 +5,7 @@ export default function Lecture({ match }) {
   const [lecture, setLecture] = useState();
   useEffect(() => {
     fetch(
-      `${process.env.PROJECT_BACKEND}/teacher/lectures/${match.params.id}`,
+      `${process.env.REACT_APP_BACKEND_SERVER}/teacher/lectures/${match.params.id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export default function Lecture({ match }) {
   }, [match.params.id]);
   const deleteAttendance = (student_id) => {
     fetch(
-      `${process.env.PROJECT_BACKEND}/teacher/lectures/${match.params.id}/${student_id}`,
+      `${process.env.REACT_APP_BACKEND_SERVER}/teacher/lectures/${match.params.id}/${student_id}`,
       {
         method: "DELETE",
         headers: {
