@@ -403,7 +403,7 @@ app.get("/student/status/:roll", (req, res) => {
     ON
     sub.subject_id=lec.subject_id
     WHERE
-    sub.class_id=(SELECT class_id FROM students WHERE student_roll='${student_roll}')) AS subj
+    sub.class_id=(SELECT class_id FROM students WHERE student_id=(SELECT student_id FROM students WHERE student_roll='${student_roll}'))) AS subj
     LEFT JOIN
     (SELECT sub.subject_id, sub.subject_name AS subject, att.lecture_id FROM attendance att
     INNER JOIN lectures lec
@@ -411,7 +411,7 @@ app.get("/student/status/:roll", (req, res) => {
     att.lecture_id=lec.lecture_id
     INNER JOIN subjects sub
     ON
-    sub.subject_id=lec.subject_id WHERE student_roll='${student_roll}') AS atte
+    sub.subject_id=lec.subject_id WHERE student_id=(SELECT student_id FROM students WHERE student_roll='${student_roll}')) AS atte
     ON atte.subject_id=subj.subject_id
     GROUP BY subj.subject_id;`,
     (error, results, fields) => {
