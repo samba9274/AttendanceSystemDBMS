@@ -29,43 +29,71 @@ connection.connect();
 app.get("/", (req, res) => res.send("Server ready"));
 
 app.get("/reset", (req, res) => {
-  connection.query("DROP TABLES classes", (error, results, fields) => {});
-  connection.query("DROP TABLES students", (error, results, fields) => {});
-  connection.query("DROP TABLES teachers", (error, results, fields) => {});
-  connection.query("DROP TABLES subjects", (error, results, fields) => {});
-  connection.query("DROP TABLES lectures", (error, results, fields) => {});
-  connection.query("DROP TABLES attendance", (error, results, fields) => {});
+  connection.query("DROP TABLES attendance", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES lectures", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES subjects", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES teachers", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES students", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES classes", (error, results, fields) => {
+    if (error) console.error(error);
+  });
   connection.query(
     "DROP TRIGGER student_attendance_insert_trigger",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE classes (class_id INT PRIMARY KEY AUTO_INCREMENT,class_name VARCHAR(20))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE students (student_id INT PRIMARY KEY AUTO_INCREMENT,student_name VARCHAR(30),student_roll VARCHAR(20) UNIQUE,student_password VARCHAR(8),class_id INT,FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE teachers (teacher_id INT PRIMARY KEY AUTO_INCREMENT,teacher_name VARCHAR(30),teacher_username VARCHAR(15) UNIQUE,teacher_password VARCHAR(8))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE subjects (subject_id INT PRIMARY KEY AUTO_INCREMENT,subject_name VARCHAR(15),teacher_id INT,class_id INT,FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
-    "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,attendees INT DEFAULT 0,,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
-    (error, results, fields) => {}
+    "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,attendees INT DEFAULT 0,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE attendance (attendance_id INT PRIMARY KEY AUTO_INCREMENT,student_id INT,lecture_id INT,FOREIGN KEY (student_id) REFERENCES students(student_id),FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TRIGGER student_attendance_insert_trigger AFTER INSERT ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees + 1 WHERE lecture_id=NEW.lecture_id; END;",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   res.status(200).send();
 });
@@ -519,43 +547,71 @@ app.delete("/teacher/lectures/:id/:student", (req, res) => {
 });
 
 app.listen(port, () => {
-  connection.query("DROP TABLES classes", (error, results, fields) => {});
-  connection.query("DROP TABLES students", (error, results, fields) => {});
-  connection.query("DROP TABLES teachers", (error, results, fields) => {});
-  connection.query("DROP TABLES subjects", (error, results, fields) => {});
-  connection.query("DROP TABLES lectures", (error, results, fields) => {});
-  connection.query("DROP TABLES attendance", (error, results, fields) => {});
+  connection.query("DROP TABLES attendance", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES lectures", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES subjects", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES teachers", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES students", (error, results, fields) => {
+    if (error) console.error(error);
+  });
+  connection.query("DROP TABLES classes", (error, results, fields) => {
+    if (error) console.error(error);
+  });
   connection.query(
     "DROP TRIGGER student_attendance_insert_trigger",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE classes (class_id INT PRIMARY KEY AUTO_INCREMENT,class_name VARCHAR(20))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE students (student_id INT PRIMARY KEY AUTO_INCREMENT,student_name VARCHAR(30),student_roll VARCHAR(20) UNIQUE,student_password VARCHAR(8),class_id INT,FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE teachers (teacher_id INT PRIMARY KEY AUTO_INCREMENT,teacher_name VARCHAR(30),teacher_username VARCHAR(15) UNIQUE,teacher_password VARCHAR(8))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE subjects (subject_id INT PRIMARY KEY AUTO_INCREMENT,subject_name VARCHAR(15),teacher_id INT,class_id INT,FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),FOREIGN KEY (class_id) REFERENCES classes(class_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,attendees INT DEFAULT 0,,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TABLE attendance (attendance_id INT PRIMARY KEY AUTO_INCREMENT,student_id INT,lecture_id INT,FOREIGN KEY (student_id) REFERENCES students(student_id),FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id))",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   connection.query(
     "CREATE TRIGGER student_attendance_insert_trigger AFTER INSERT ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees + 1 WHERE lecture_id=NEW.lecture_id; END;",
-    (error, results, fields) => {}
+    (error, results, fields) => {
+      if (error) console.error(error);
+    }
   );
   console.log(`Listening on port : ${port}`);
 });

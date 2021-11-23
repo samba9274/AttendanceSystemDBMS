@@ -54,6 +54,7 @@ export default function Lecture({ match }) {
             <tr>
               <th>Name</th>
               <th>Roll</th>
+              <th>Attendance : {lecture.lecture.attendees}</th>
             </tr>
           </thead>
           <tbody>
