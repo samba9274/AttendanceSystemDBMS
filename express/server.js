@@ -96,7 +96,7 @@ app.get("/reset", (req, res) => {
     }
   );
   connection.query(
-    "CREATE TRIGGER student_attendance_delete_trigger AFTER DELETE ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees - 1 WHERE lecture_id=NEW.lecture_id; END;",
+    "CREATE TRIGGER student_attendance_delete_trigger AFTER DELETE ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees - 1 WHERE lecture_id=OLD.lecture_id; END;",
     (error, results, fields) => {
       if (error) console.error(error);
     }
@@ -389,8 +389,8 @@ app.post("/teacher/login", (req, res) => {
   );
 });
 
-app.get("/student/status/:id", (req, res) => {
-  student_id = req.params.id;
+app.get("/student/status/:roll", (req, res) => {
+  student_roll = req.params.roll;
   connection.query(
     `SELECT 
     subj.subject, COUNT(atte.lecture_id) AS attended, COUNT(subj.lecture_id) AS total, concat(round((COUNT(atte.lecture_id)/COUNT(subj.lecture_id))*100, 1), '%') as percentage
@@ -403,7 +403,7 @@ app.get("/student/status/:id", (req, res) => {
     ON
     sub.subject_id=lec.subject_id
     WHERE
-    sub.class_id=(SELECT class_id FROM students WHERE student_id=${student_id})) AS subj
+    sub.class_id=(SELECT class_id FROM students WHERE student_roll=${student_roll})) AS subj
     LEFT JOIN
     (SELECT sub.subject_id, sub.subject_name AS subject, att.lecture_id FROM attendance att
     INNER JOIN lectures lec
@@ -411,7 +411,7 @@ app.get("/student/status/:id", (req, res) => {
     att.lecture_id=lec.lecture_id
     INNER JOIN subjects sub
     ON
-    sub.subject_id=lec.subject_id WHERE student_id=${student_id}) AS atte
+    sub.subject_id=lec.subject_id WHERE student_roll=${student_roll}) AS atte
     ON atte.subject_id=subj.subject_id
     GROUP BY subj.subject_id;`,
     (error, results, fields) => {
@@ -734,7 +734,7 @@ app.listen(port, () => {
     }
   );
   connection.query(
-    "CREATE TRIGGER student_attendance_delete_trigger AFTER DELETE ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees - 1 WHERE lecture_id=NEW.lecture_id; END;",
+    "CREATE TRIGGER student_attendance_delete_trigger AFTER DELETE ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees - 1 WHERE lecture_id=OLD.lecture_id; END;",
     (error, results, fields) => {
       if (error) console.error(error);
     }
