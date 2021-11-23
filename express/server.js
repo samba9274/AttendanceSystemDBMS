@@ -596,7 +596,7 @@ app.listen(port, () => {
     }
   );
   connection.query(
-    "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,attendees INT DEFAULT 0,,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
+    "CREATE TABLE lectures (lecture_id INT PRIMARY KEY AUTO_INCREMENT,lecture_name VARCHAR(30),lecture_code VARCHAR(5) UNIQUE,lecture_start DATETIME,subject_id INT,attendees INT DEFAULT 0,FOREIGN KEY (subject_id) REFERENCES subjects(subject_id))",
     (error, results, fields) => {
       if (error) console.error(error);
     }
