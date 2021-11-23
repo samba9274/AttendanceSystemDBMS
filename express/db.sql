@@ -46,3 +46,8 @@ AFTER INSERT ON attendance FOR EACH ROW
 BEGIN
     UPDATE lectures SET attendees = attendees + 1 WHERE lecture_id=NEW.lecture_id;
 END;
+CREATE TRIGGER student_attendance_insert_trigger
+AFTER DELETE ON attendance FOR EACH ROW
+BEGIN
+    UPDATE lectures SET attendees = attendees - 1 WHERE lecture_id=NEW.lecture_id;
+END;
