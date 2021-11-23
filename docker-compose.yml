@@ -9,6 +9,7 @@ services:
       - MYSQL_USER=dbms
       - MYSQL_PASSWORD=dbms
       - MYSQL_DATABASE=project
+      - log-bin-trust-function-creators=TRUE
     volumes:
       - ./db:/db
     networks:

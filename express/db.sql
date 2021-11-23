@@ -1,7 +1,3 @@
--- CREATE DATABASE project;
--- CREATE USER 'dbms'@'localhost' IDENTIFIED BY 'dbms';
--- GRANT ALL PRIVILEGES ON project.* TO 'dbms'@'localhost'ALTER USER 'dbms'@'localhost' IDENTIFIED WITH mysql_native_password BY 'dbms';
--- USE project;
 DROP TABLES classes, students, teachers, subjects, lectures, attendance;
 DROP TRIGGER student_attendance_insert_trigger;
 CREATE TABLE classes (
@@ -45,7 +41,7 @@ CREATE TABLE attendance (
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id)
 );
-CREATE OR REPLACE TRIGGER student_attendance_insert_trigger
+CREATE TRIGGER student_attendance_insert_trigger
 AFTER INSERT ON attendance FOR EACH ROW
 BEGIN
     UPDATE lectures SET attendees = attendees + 1 WHERE lecture_id=NEW.lecture_id;
