@@ -29,15 +29,42 @@ connection.connect();
 app.get("/", (req, res) => res.send("Server ready"));
 
 app.get("/reset", (req, res) => {
-  connection.query(
-    "DROP TABLES classes, students, teachers, subjects, lectures, attendance",
-    (error, results, fields) => {
-      if (error) {
-        res.status(500).send();
-        return;
-      }
+  connection.query("DROP TABLES classes", (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
     }
-  );
+  });
+  connection.query("DROP TABLES students", (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+  });
+  connection.query("DROP TABLES teachers", (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+  });
+  connection.query("DROP TABLES subjects", (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+  });
+  connection.query("DROP TABLES lectures", (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+  });
+  connection.query("DROP TABLES attendance", (error, results, fields) => {
+    if (error) {
+      res.status(500).send();
+      return;
+    }
+  });
   connection.query(
     "DROP TRIGGER student_attendance_insert_trigger",
     (error, results, fields) => {
@@ -562,12 +589,24 @@ app.delete("/teacher/lectures/:id/:student", (req, res) => {
 });
 
 app.listen(port, () => {
-  connection.query(
-    "DROP TABLES classes, students, teachers, subjects, lectures, attendance",
-    (error, results, fields) => {
-      if (error) return;
-    }
-  );
+  connection.query("DROP TABLES classes", (error, results, fields) => {
+    if (error) return;
+  });
+  connection.query("DROP TABLES students", (error, results, fields) => {
+    if (error) return;
+  });
+  connection.query("DROP TABLES teachers", (error, results, fields) => {
+    if (error) return;
+  });
+  connection.query("DROP TABLES subjects", (error, results, fields) => {
+    if (error) return;
+  });
+  connection.query("DROP TABLES lectures", (error, results, fields) => {
+    if (error) return;
+  });
+  connection.query("DROP TABLES attendance", (error, results, fields) => {
+    if (error) return;
+  });
   connection.query(
     "DROP TRIGGER student_attendance_insert_trigger",
     (error, results, fields) => {
