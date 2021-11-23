@@ -1,7 +1,7 @@
-CREATE DATABASE project;
-CREATE USER 'dbms'@'localhost' IDENTIFIED BY 'dbms';
-GRANT ALL PRIVILEGES ON project.* TO 'dbms'@'localhost'ALTER USER 'dbms'@'localhost' IDENTIFIED WITH mysql_native_password BY 'dbms';
-USE project;
+-- CREATE DATABASE project;
+-- CREATE USER 'dbms'@'localhost' IDENTIFIED BY 'dbms';
+-- GRANT ALL PRIVILEGES ON project.* TO 'dbms'@'localhost'ALTER USER 'dbms'@'localhost' IDENTIFIED WITH mysql_native_password BY 'dbms';
+-- USE project;
 DROP TABLES classes, students, teachers, subjects, lectures, attendance;
 DROP TRIGGER student_attendance_insert_trigger;
 CREATE TABLE classes (
