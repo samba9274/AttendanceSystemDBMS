@@ -103,18 +103,19 @@ app.post("/class", (req, res) => {
     `INSERT INTO classes(class_name) VALUES ('${req.body.class.name}')`,
     (error, results, fields) => {
       if (error) {
+        console.error(error);
         res.status(500).send();
         return;
       }
       res.status(201).send();
     }
   );
-  res.status(201).send();
 });
 
 app.get("/class", (req, res) => {
   connection.query(`SELECT * FROM classes`, (error, results, fields) => {
     if (error) {
+      console.error(error);
       res.status(500).send();
       return;
     }
@@ -128,6 +129,7 @@ app.post("/student", (req, res) => {
     `INSERT INTO students(student_name, student_roll, class_id, student_password) VALUES ('${req.body.student.name}', '${req.body.student.roll}', ${req.body.student.class}, '${req.body.student.password}')`,
     (error, results, fields) => {
       if (error) {
+        console.error(error);
         res.status(500).send();
         return;
       }
@@ -140,6 +142,7 @@ app.post("/student", (req, res) => {
 app.get("/student", (req, res) => {
   connection.query(`SELECT * FROM students`, (error, results, fields) => {
     if (error) {
+      console.error(error);
       res.status(500).send();
       return;
     }
@@ -153,18 +156,19 @@ app.post("/teacher", (req, res) => {
     `INSERT INTO teachers(teacher_name, teacher_username, teacher_password) VALUES ('${req.body.teacher.name}', '${req.body.teacher.username}', '${req.body.teacher.password}')`,
     (error, results, fields) => {
       if (error) {
+        console.error(error);
         res.status(500).send();
         return;
       }
       res.status(201).send();
     }
   );
-  res.status(201).send();
 });
 
 app.get("/teacher", (req, res) => {
   connection.query(`SELECT * FROM teachers`, (error, results, fields) => {
     if (error) {
+      console.error(error);
       res.status(500).send();
       return;
     }
@@ -178,6 +182,7 @@ app.post("/subject", (req, res) => {
     `INSERT INTO subjects(subject_name, teacher_id, class_id) VALUES ('${req.body.subject.name}', ${req.body.subject.teacher}, ${req.body.subject.class})`,
     (error, results, fields) => {
       if (error) {
+        console.error(error);
         res.status(500).send();
         return;
       }
@@ -189,6 +194,7 @@ app.post("/subject", (req, res) => {
 app.get("/subject", (req, res) => {
   connection.query(`SELECT * FROM subjects`, (error, results, fields) => {
     if (error) {
+      console.error(error);
       res.status(500).send();
       return;
     }
@@ -209,12 +215,17 @@ app.post("/lecture", (req, res) => {
   connection.query(
     `SELECT teacher_id FROM subjects WHERE subject_id=${req.body.lecture.subject}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
       if (results[0].teacher_id === teacher_id) {
         connection.query(
           `INSERT INTO lectures(lecture_name, lecture_code, lecture_start, subject_id) VALUES ('${req.body.lecture.name}', '${lecture_code}', '${req.body.lecture.start}', ${req.body.lecture.subject})`,
           (error, results, fields) => {
             if (error) {
+              console.error(error);
               res.status(500).send();
               return;
             }
@@ -230,6 +241,7 @@ app.post("/lecture", (req, res) => {
 app.get("/lecture", (req, res) => {
   connection.query(`SELECT * FROM lectures`, (error, results, fields) => {
     if (error) {
+      console.error(error);
       res.status(500).send();
       return;
     }
@@ -250,6 +262,7 @@ app.post("/attendance", (req, res) => {
     `SELECT stud.class_id AS stud_class, sub.class_id AS sub_class FROM students stud, subjects sub INNER JOIN lectures lec ON lec.subject_id=sub.subject_id WHERE stud.student_id=${student_id} AND lec.lecture_code='${req.body.attendance.lecture}';`,
     (error, results, fields) => {
       if (error) {
+        console.error(error);
         res.status(401).send();
         return;
       }
@@ -262,6 +275,7 @@ app.post("/attendance", (req, res) => {
           (error, results, fields) => {
             if (results.length > 0) {
               if (error) {
+                console.error(error);
                 res.status(401).send();
                 return;
               }
@@ -271,7 +285,11 @@ app.post("/attendance", (req, res) => {
               connection.query(
                 `INSERT INTO attendance(student_id, lecture_id) VALUES (${student_id}, (SELECT lecture_id FROM lectures WHERE lecture_code='${req.body.attendance.lecture}'))`,
                 (error, results, fields) => {
-                  if (error) res.status(401).send();
+                  if (error) {
+                    console.error(error);
+                    res.status(401).send();
+                    return;
+                  }
                   return;
                 }
               );
@@ -287,6 +305,7 @@ app.post("/attendance", (req, res) => {
 app.get("/attendance", (req, res) => {
   connection.query(`SELECT * FROM attendance`, (error, results, fields) => {
     if (error) {
+      console.error(error);
       res.status(500).send();
       return;
     }
@@ -301,7 +320,11 @@ app.post("/student/login", (req, res) => {
   connection.query(
     `SELECT * FROM students WHERE student_roll='${roll}'`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
       if (results.length > 0 && results[0].student_password === password) {
         res.status(200).send({
           jwt:
@@ -326,7 +349,11 @@ app.post("/teacher/login", (req, res) => {
   connection.query(
     `SELECT * FROM teachers WHERE teacher_username='${username}'`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
       if (results.length > 0 && results[0].teacher_password === password)
         res.status(200).send({
           jwt:
@@ -376,8 +403,11 @@ app.get("/student/status", (req, res) => {
     ON atte.subject_id=subj.subject_id
     GROUP BY subj.subject_id;`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
-      else res.status(200).send(results);
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      } else res.status(200).send(results);
     }
   );
 });
@@ -393,8 +423,11 @@ app.get("/teacher/lectures", (req, res) => {
   connection.query(
     `SELECT sub.subject_id AS subject_id, sub.subject_name AS subject, cls.class_name as class FROM subjects sub INNER JOIN classes cls ON sub.class_id=cls.class_id WHERE sub.teacher_id=${teacher_id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
-      else {
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      } else {
         subjects = results.map((sub) => {
           return {
             subject_id: sub.subject_id,
@@ -417,8 +450,11 @@ app.get("/teacher/lectures", (req, res) => {
           ORDER BY
           lec.lecture_start DESC`,
           (error, results, fields) => {
-            if (error) res.status(500).send();
-            else
+            if (error) {
+              console.error(error);
+              res.status(500).send();
+              return;
+            } else
               res.status(200).send({ subjects: subjects, lectures: results });
           }
         );
@@ -437,13 +473,20 @@ app.put("/student", (req, res) => {
   connection.query(
     `SELECT student_password FROM students WHERE student_id=${student_id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
       if (results[0].student_password === req.body.student.old)
         connection.query(
           `UPDATE students SET student_password=${req.body.student.new} WHERE student_id=${student_id}`,
           (error, results, fields) => {
-            if (error) res.status(500).send();
-            else res.status(200).send();
+            if (error) {
+              console.error(error);
+              res.status(500).send();
+              return;
+            } else res.status(200).send();
           }
         );
       else res.status(401).send();
@@ -461,13 +504,20 @@ app.put("/teacher", (req, res) => {
   connection.query(
     `SELECT teacher_password FROM teachers WHERE teacher_id=${teacher_id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
       if (results[0].teacher_password === req.body.teacher.old)
         connection.query(
           `UPDATE teachers SET teacher_password=${req.body.teacher.new} WHERE teacher_id=${teacher_id}`,
           (error, results, fields) => {
-            if (error) res.status(500).send();
-            else res.status(200).send();
+            if (error) {
+              console.error(error);
+              res.status(500).send();
+              return;
+            } else res.status(200).send();
           }
         );
       else res.status(401).send();
@@ -496,15 +546,21 @@ app.get("/teacher/lectures/:id", (req, res) => {
     WHERE
     lec.lecture_id=${req.params.id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
-      else attendance = results;
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      } else attendance = results;
     }
   );
   connection.query(
     `SELECT sub.subject_name AS subject, lec.lecture_name AS lecture, lec.lecture_start AS start, lec.lecture_code AS code, lec.attendees AS attendees FROM lectures lec INNER JOIN subjects sub ON sub.subject_id=lec.subject_id WHERE lec.lecture_id=${req.params.id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
-      else
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      } else
         res.status(200).send({ lecture: results[0], attendance: attendance });
     }
   );
@@ -519,13 +575,21 @@ app.delete("/lecture/:id", (req, res) => {
   connection.query(
     `DELETE FROM attendance WHERE lecture_id=${req.params.id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
     }
   );
   connection.query(
     `DELETE FROM lectures WHERE lecture_id=${req.params.id}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
     }
   );
   res.status(200).send();
@@ -540,7 +604,11 @@ app.delete("/teacher/lectures/:id/:student", (req, res) => {
   connection.query(
     `DELETE FROM attendance WHERE lecture_id=${req.params.id} AND student_id=${req.params.student}`,
     (error, results, fields) => {
-      if (error) res.status(500).send();
+      if (error) {
+        console.error(error);
+        res.status(500).send();
+        return;
+      }
     }
   );
   res.status(200).send();
