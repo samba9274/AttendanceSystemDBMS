@@ -3,13 +3,12 @@ version: "3"
 services:
   db:
     image: ubuntu/mysql:latest
-    command: --default-authentication-plugin=mysql_native_password
+    command: ["--default-authentication-plugin=mysql_native_password", "--log-bin-trust-function-creators=1"]
     environment:
       - MYSQL_ROOT_PASSWORD=toor
       - MYSQL_USER=dbms
       - MYSQL_PASSWORD=dbms
       - MYSQL_DATABASE=project
-      - log-bin-trust-function-creators=TRUE
     volumes:
       - ./db:/db
     networks:
