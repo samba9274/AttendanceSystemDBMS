@@ -36,7 +36,7 @@ CREATE TABLE lectures (
     lecture_code VARCHAR(5) UNIQUE,
     lecture_start DATETIME,
     subject_id INT,
-    present INT DEFAULT 0,
+    attendees INT DEFAULT 0,
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 CREATE TABLE attendance (
@@ -48,5 +48,5 @@ CREATE TABLE attendance (
 CREATE OR REPLACE TRIGGER student_attendance_insert_trigger
 AFTER INSERT ON attendance FOR EACH ROW
 BEGIN
-    UPDATE lectures SET present = present + 1 WHERE lecture_id=NEW.lecture_id;
+    UPDATE lectures SET attendees = attendees + 1 WHERE lecture_id=NEW.lecture_id;
 END;

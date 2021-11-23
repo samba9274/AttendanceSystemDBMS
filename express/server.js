@@ -464,7 +464,7 @@ app.get("/teacher/lectures/:id", (req, res) => {
     }
   );
   connection.query(
-    `SELECT sub.subject_name AS subject, lec.lecture_name AS lecture, lec.lecture_start AS start, lec.lecture_code AS code FROM lectures lec INNER JOIN subjects sub ON sub.subject_id=lec.subject_id WHERE lec.lecture_id=${req.params.id}`,
+    `SELECT sub.subject_name AS subject, lec.lecture_name AS lecture, lec.lecture_start AS start, lec.lecture_code AS code, lec.attendees AS attendees FROM lectures lec INNER JOIN subjects sub ON sub.subject_id=lec.subject_id WHERE lec.lecture_id=${req.params.id}`,
     (error, results, fields) => {
       if (error) res.status(500).send();
       else
