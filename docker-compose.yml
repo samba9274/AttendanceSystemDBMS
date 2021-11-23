@@ -9,6 +9,8 @@ services:
       - MYSQL_USER=dbms
       - MYSQL_PASSWORD=dbms
       - MYSQL_DATABASE=project
+    volumes:
+      - ./db:/db
     networks:
       - mern-app
     healthcheck:
