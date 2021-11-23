@@ -572,6 +572,15 @@ app.listen(port, () => {
     }
   );
   connection.query(
+    "DROP TRIGGER student_attendance_insert_trigger",
+    (error, results, fields) => {
+      if (error) {
+        res.status(500).send();
+        return;
+      }
+    }
+  );
+  connection.query(
     "CREATE TABLE classes (class_id INT PRIMARY KEY AUTO_INCREMENT,class_name VARCHAR(20))",
     (error, results, fields) => {
       if (error) {
@@ -618,6 +627,15 @@ app.listen(port, () => {
   );
   connection.query(
     "CREATE TABLE attendance (attendance_id INT PRIMARY KEY AUTO_INCREMENT,student_id INT,lecture_id INT,FOREIGN KEY (student_id) REFERENCES students(student_id),FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id))",
+    (error, results, fields) => {
+      if (error) {
+        res.status(500).send();
+        return;
+      }
+    }
+  );
+  connection.query(
+    "CREATE TRIGGER student_attendance_insert_trigger AFTER INSERT ON attendance FOR EACH ROW BEGIN UPDATE lectures SET attendees = attendees + 1 WHERE lecture_id=NEW.lecture_id; END;",
     (error, results, fields) => {
       if (error) {
         res.status(500).send();
