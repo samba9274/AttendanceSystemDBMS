@@ -283,17 +283,28 @@ app.post("/attendance", (req, res) => {
               return;
             } else {
               connection.query(
-                `INSERT INTO attendance(student_id, lecture_id) VALUES (${student_id}, (SELECT lecture_id FROM lectures WHERE lecture_code='${req.body.attendance.lecture}'))`,
+                `SELECT lecture_id FROM lectures WHERE lecture_code='${req.body.attendance.lecture}'`,
                 (error, results, fields) => {
                   if (error) {
                     console.error(error);
-                    res.status(401).send();
+                    res.status(500).send();
                     return;
                   }
-                  return;
+                  const lecture_id = results[0].lecture_id;
+                  connection.query(
+                    `INSERT INTO attendance(student_id, lecture_id) VALUES (${student_id}, ${lecture_id})`,
+                    (error, results, fields) => {
+                      if (error) {
+                        console.error(error);
+                        res.status(401).send();
+                        return;
+                      }
+                      res.status(201).send();
+                      return;
+                    }
+                  );
                 }
               );
-              res.status(201).send();
             }
           }
         );
