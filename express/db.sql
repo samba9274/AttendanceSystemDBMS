@@ -37,7 +37,8 @@ CREATE TABLE lectures (
 );
 CREATE TABLE attendance (
     attendance_id INT PRIMARY KEY AUTO_INCREMENT,
-    student_id INT,lecture_id INT,
+    student_id INT,
+    lecture_id INT,
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id)
 );
